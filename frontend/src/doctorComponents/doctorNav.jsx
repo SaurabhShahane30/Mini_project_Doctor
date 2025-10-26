@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Home from '../Home';
 import SignIn from './signin';
 import SignUp from './signup';
 import DoctorDashboard from './doctor-dashboard';
 
 export default function Patient() {
   const [currentPage, setCurrentPage] = useState('signin');
+  const navigate = useNavigate();
 
   // after signing in, go to dashboard
   const handleSignIn = () => {
@@ -19,6 +22,7 @@ export default function Patient() {
   // after signing out, back to home page
   const handleSignOut = () => {
     setCurrentPage('home');
+    navigate('/');
   };
 
   // switch to sign up

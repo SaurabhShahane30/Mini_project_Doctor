@@ -44,9 +44,20 @@ export default function PatientDashboard({ onSignOut, onSeePatient }) {
       </header>
 
       {/* Main Content */}
-      <DoctorsList doctors={doctors}></DoctorsList>
-      <PdfUploader onUpload={onUpload}></PdfUploader>
-      <PrescriptionsList prescriptions={prescriptions}></PrescriptionsList>
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Doctor List (top section) */}
+        <DoctorsList doctors={doctors} />
+
+        {/* PdfUploader and PrescriptionsList side by side */}
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-1">
+            <PdfUploader onUpload={onUpload} />
+          </div>
+          <div className="flex-1">
+            <PrescriptionsList prescriptions={prescriptions} />
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
