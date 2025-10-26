@@ -4,7 +4,12 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+<<<<<<< HEAD:backend/scripts/server.js
 import userRoutes from "./userRoutes.js"; // user routes
+=======
+import userRoutes from "./routes/UserRoutes.js"; // user routes
+
+>>>>>>> parent of ed76f6a (renamed routes and imports):backend/server.js
 
 
 const app = express(); // define the app
