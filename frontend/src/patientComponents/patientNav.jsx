@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Home from '../Home';
 import SignIn from './signin';
 import SignUp from './signup';
 import PatientDashboard from './patient-dashboard';
@@ -53,6 +54,11 @@ export default function Patient() {
         <PatientDashboard 
           onSignOut={handleSignOut}
         />
+      );
+
+    case 'home':
+      return (
+        <Home></Home>
       );
     default:
       return null;

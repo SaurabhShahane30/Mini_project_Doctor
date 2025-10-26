@@ -3,9 +3,9 @@ import { UserRoundPlus } from "lucide-react";
 
 export default function SignUp({ onSignUp, onSwitchToSignIn }) {
   const [formData, setFormData] = useState({
-    naem: "",
+    name: "",
     age: null,
-    gender: "male",
+    gender: "Male",
     email: "",
     password: "",
     confirmPassword: ""
@@ -52,8 +52,8 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
         alert("✅ Signup successful!");
         setFormData({
           name: "",
-          age: null,
-          gender: "male",
+          age: 0,
+          gender: "Male",
           email: "",
           password: "",
           confirmPassword: ""
@@ -127,18 +127,22 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
             {/* GENDER */}
             <div>
               <label htmlFor="gender" className="block text-sm text-gray-600 mb-1">
-                Gender
+                Gender: Click to toggle
               </label>
-              <input
+              <button
+                type="button"
                 id="gender"
                 name="gender"
-                type="text"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.gender}
-                onChange={handleChange}
-                required
-              />
+                className="w-full py-2 rounded-md font-medium transition bg-teal-600 hover:bg-teal-700 text-white"
+                  onClick={() => setFormData(prev => ({
+                  ...prev,
+                  gender: prev.gender === 'Male' ? 'Female' : 'Male'
+                }))}
+              >
+                {formData.gender || 'Select Gender'}
+              </button>
             </div>
+
 
           </div>
 
@@ -191,7 +195,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
               required
             />
           </div>
-
+          
           <button
             type="submit"
             disabled={loading}

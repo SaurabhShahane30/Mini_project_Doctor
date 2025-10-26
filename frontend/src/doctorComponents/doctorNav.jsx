@@ -54,6 +54,11 @@ export default function Patient() {
           onSignOut={handleSignOut}
         />
       );
+
+    case 'home':
+      return (
+        <Home></Home>
+      );
     default:
       return null;
   }
