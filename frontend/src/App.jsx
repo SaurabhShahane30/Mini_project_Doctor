@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import SignIn from './components/signin';
-import SignUp from './components/signup';
-import DoctorDashboard from './components/doctor-dashboard';
-import PrescriptionPage from './components/prescription-page';
+import SignIn from './doctorComponents/signin';
+import SignUp from './doctorComponents/signup';
+import DoctorDashboard from './doctorComponents/doctor-dashboard';
+import PrescriptionPage from './doctorComponents/prescription-page';
 
 export default function App() {
   const [currentState, setCurrentState] = useState('signin');

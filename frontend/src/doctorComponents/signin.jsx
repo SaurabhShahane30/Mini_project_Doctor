@@ -51,16 +51,16 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
             />
           </div>
           <div>
-  <label className="block text-sm text-gray-600 mb-1">License Number</label>
-  <input
-    type="text"
-    placeholder="Enter your license number"
-    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500"
-    value={licenseNumber}
-    onChange={(e) => setLicenseNumber(e.target.value)}
-    required
-  />
-</div>
+            <label className="block text-sm text-gray-600 mb-1">License Number</label>
+            <input
+              type="text"
+              placeholder="Enter your license number"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500"
+              value={licenseNumber}
+              onChange={(e) => setLicenseNumber(e.target.value)}
+              required
+            />
+          </div>
 
           <div>
             <label className="block text-sm text-gray-600 mb-1">Password</label>
