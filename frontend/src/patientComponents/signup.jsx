@@ -7,9 +7,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
     lastName: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    licenseNumber: "",
-    specialization: "",
+    confirmPassword: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,7 +36,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/user/signup", {
+      const response = await fetch("http://localhost:5000/api/patient/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,6 +46,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
 
       const data = await response.json();
 
+      console.log(data)
       if (response.ok) {
         alert("✅ Signup successful!");
         setFormData({
@@ -55,9 +54,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
           lastName: "",
           email: "",
           password: "",
-          confirmPassword: "",
-          licenseNumber: "",
-          specialization: "",
+          confirmPassword: ""
         });
         onSignUp(); // call parent callback
       } else {
@@ -82,14 +79,15 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">
-            Join Our Medical Network
+            Register
           </h2>
-          <p className="text-gray-500">Create your doctor account to get started</p>
+          <p className="text-gray-500">Create your Patient account to get started</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
             <div>
               <label htmlFor="firstName" className="block text-sm text-gray-600 mb-1">
                 First Name
@@ -105,6 +103,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
                 required
               />
             </div>
+
             <div>
               <label htmlFor="lastName" className="block text-sm text-gray-600 mb-1">
                 Last Name
@@ -120,6 +119,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
                 required
               />
             </div>
+
           </div>
 
           <div>
@@ -130,41 +130,9 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
               id="email"
               name="email"
               type="email"
-              placeholder="doctor@hospital.com"
+              placeholder="Enter your EMail"
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
               value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="licenseNumber" className="block text-sm text-gray-600 mb-1">
-              Medical License Number
-            </label>
-            <input
-              id="licenseNumber"
-              name="licenseNumber"
-              type="text"
-              placeholder="MD123456"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              value={formData.licenseNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="specialization" className="block text-sm text-gray-600 mb-1">
-              Specialization
-            </label>
-            <input
-              id="specialization"
-              name="specialization"
-              type="text"
-              placeholder="e.g., Cardiology, Pediatrics"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              value={formData.specialization}
               onChange={handleChange}
               required
             />

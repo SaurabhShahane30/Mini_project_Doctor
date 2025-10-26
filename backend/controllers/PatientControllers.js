@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import Patient from "../models/patient"
+import Patient from "../models/patient.js"
 
 // ✅ SIGNUP
 export const signup = async (req, res) => {

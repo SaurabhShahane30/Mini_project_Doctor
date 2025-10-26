@@ -19,6 +19,7 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
       onSignIn(res.data.user); // Pass user info to parent
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
+      console.log(err.response);
     }
   };
 
