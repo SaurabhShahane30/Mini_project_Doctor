@@ -38,7 +38,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/Users/signup", {
+      const response = await fetch("http://localhost:5000/api/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
