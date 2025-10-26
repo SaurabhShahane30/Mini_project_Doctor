@@ -1,4 +1,4 @@
-import { Stethoscope } from "lucide-react";
+import { Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
             <div className="bg-teal-600 p-3 rounded-full">
-              <Stethoscope className="h-6 w-6 text-white" />
+              <Activity className="h-6 w-6 text-white" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">Who are you?</h2>

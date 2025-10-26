@@ -4,7 +4,7 @@ import Patient from "../models/patient.js"
 // ✅ SIGNUP
 export const signup = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { name, age, gender, email, password } = req.body;
 
     const existingPatient = await Patient.findOne({ email });
     if (existingPatient) return res.status(400).json({ message: "Patient already exists" });
@@ -12,8 +12,9 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newPatient = new Patient({
-      firstName,
-      lastName,
+      name,
+      age,
+      gender,
       email,
       password: hashedPassword
     });
@@ -28,9 +29,9 @@ export const signup = async (req, res) => {
 // ✅ SIGNIN
 export const signin = async (req, res) => {
   try {
-    const { email, licenseNumber, password } = req.body;
+    const { email, password } = req.body;
 
-    const Patient = await Patient.findOne({ licenseNumber });
+    const Patient = await Patient.findOne({ email });
     if (!Patient) return res.status(404).json({ message: "Patient not found" });
 
     const isMatch = await bcrypt.compare(password, Patient.password);

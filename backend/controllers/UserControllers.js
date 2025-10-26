@@ -4,7 +4,7 @@ import User from "../models/user.js";
 // ✅ SIGNUP
 export const signup = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, licenseNumber, specialization } = req.body;
+    const { name, email, password, licenseNumber, specialization } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
@@ -12,8 +12,7 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      name,
       email,
       password: hashedPassword,
       licenseNumber,
@@ -30,7 +29,7 @@ export const signup = async (req, res) => {
 // ✅ SIGNIN
 export const signin = async (req, res) => {
   try {
-    const { email, licenseNumber, password } = req.body;
+    const { licenseNumber, password } = req.body;
 
     const user = await User.findOne({ licenseNumber });
     if (!user) return res.status(404).json({ message: "User not found" });

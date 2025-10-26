@@ -3,8 +3,7 @@ import { Stethoscope } from "lucide-react";
 
 export default function SignUp({ onSignUp, onSwitchToSignIn }) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -51,8 +50,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
       if (response.ok) {
         alert("✅ Signup successful!");
         setFormData({
-          firstName: "",
-          lastName: "",
+          name: "",
           email: "",
           password: "",
           confirmPassword: "",
@@ -89,37 +87,21 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm text-gray-600 mb-1">
-                First Name
-              </label>
-              <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                placeholder="John"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm text-gray-600 mb-1">
-                Last Name
-              </label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                placeholder="Doe"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            
+          <div>
+            <label htmlFor="name" className="block text-sm text-gray-600 mb-1">
+              Full Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Doe"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div>

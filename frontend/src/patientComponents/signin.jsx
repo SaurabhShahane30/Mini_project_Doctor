@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Stethoscope } from "lucide-react";
+import { UserRoundPlus } from "lucide-react";
 import axios from "axios";
 
 export default function SignIn({ onSignIn, onSwitchToSignUp }) {
@@ -30,7 +30,7 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
             <div className="bg-teal-600 p-3 rounded-full">
-              <Stethoscope className="h-6 w-6 text-white" />
+              <UserRoundPlus className="h-6 w-6 text-white" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>

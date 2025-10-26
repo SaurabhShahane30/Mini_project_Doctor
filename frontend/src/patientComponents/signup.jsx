@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Stethoscope } from "lucide-react";
+import { UserRoundPlus } from "lucide-react";
 
 export default function SignUp({ onSignUp, onSwitchToSignIn }) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    naem: "",
+    age: null,
+    gender: "male",
     email: "",
     password: "",
     confirmPassword: ""
@@ -50,8 +51,9 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
       if (response.ok) {
         alert("✅ Signup successful!");
         setFormData({
-          firstName: "",
-          lastName: "",
+          name: "",
+          age: null,
+          gender: "male",
           email: "",
           password: "",
           confirmPassword: ""
@@ -75,46 +77,64 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
             <div className="bg-teal-600 p-3 rounded-full">
-              <Stethoscope className="h-6 w-6 text-white" />
+              <UserRoundPlus className="h-6 w-6 text-white" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">
             Register
           </h2>
-          <p className="text-gray-500">Create your Patient account to get started</p>
+          <p className="text-gray-500">Create your Patient Account to get started</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* FIRST NAME */}
+          <div>
+            <label htmlFor="name" className="block text-sm text-gray-600 mb-1">
+              Full Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="John"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+            {/* AGE */}
             <div>
-              <label htmlFor="firstName" className="block text-sm text-gray-600 mb-1">
-                First Name
+              <label htmlFor="age" className="block text-sm text-gray-600 mb-1">
+                Age
               </label>
               <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                placeholder="John"
+                id="age"
+                name="age"
+                type="number"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.firstName}
+                value={formData.age}
                 onChange={handleChange}
                 required
               />
             </div>
 
+            {/* GENDER */}
             <div>
-              <label htmlFor="lastName" className="block text-sm text-gray-600 mb-1">
-                Last Name
+              <label htmlFor="gender" className="block text-sm text-gray-600 mb-1">
+                Gender
               </label>
               <input
-                id="lastName"
-                name="lastName"
+                id="gender"
+                name="gender"
                 type="text"
-                placeholder="Doe"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.lastName}
+                value={formData.gender}
                 onChange={handleChange}
                 required
               />
@@ -122,6 +142,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
 
           </div>
 
+          {/* EMAIL */}
           <div>
             <label htmlFor="email" className="block text-sm text-gray-600 mb-1">
               Email
@@ -138,6 +159,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
             />
           </div>
 
+          {/* PASSWORD */}
           <div>
             <label htmlFor="password" className="block text-sm text-gray-600 mb-1">
               Password
