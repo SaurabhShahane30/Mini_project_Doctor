@@ -1,14 +1,26 @@
-import { useState } from 'react';
-import { Stethoscope } from 'lucide-react';
+import { useState } from "react";
+import { Stethoscope } from "lucide-react";
+import axios from "axios";
 
 export default function SignIn({ onSignIn, onSwitchToSignUp }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      onSignIn();
+    try {
+      const res = await axios.post("http://localhost:5000/api/user/signin", {
+        email,
+        licenseNumber,
+        password
+      });
+
+      console.log("Login success:", res.data);
+      onSignIn(res.data.user); // Pass user info to parent
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -26,49 +38,55 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
           <p className="text-gray-500">Sign in to your medical dashboard</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm text-gray-600 mb-1">Email</label>
+            <label className="block text-sm text-gray-600 mb-1">Email</label>
             <input
-              id="email"
               type="email"
               placeholder="doctor@hospital.com"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
+          <div>
+  <label className="block text-sm text-gray-600 mb-1">License Number</label>
+  <input
+    type="text"
+    placeholder="Enter your license number"
+    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500"
+    value={licenseNumber}
+    onChange={(e) => setLicenseNumber(e.target.value)}
+    required
+  />
+</div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-gray-600 mb-1">Password</label>
+            <label className="block text-sm text-gray-600 mb-1">Password</label>
             <input
-              id="password"
               type="password"
               placeholder="Enter your password"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
           <button
             type="submit"
-            className="w-full bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 font-medium transition"
+            className="w-full bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 transition"
           >
             Sign In
           </button>
         </form>
 
-        {/* Switch to Sign Up */}
         <div className="text-center mt-6 text-sm text-gray-600">
-          Don't have an account?{' '}
-          <button
-            onClick={onSwitchToSignUp}
-            className="text-teal-600 hover:underline font-medium"
-          >
+          Don't have an account?{" "}
+          <button onClick={onSwitchToSignUp} className="text-teal-600 hover:underline font-medium">
             Sign up here
           </button>
         </div>

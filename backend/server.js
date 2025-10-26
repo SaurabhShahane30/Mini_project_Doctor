@@ -1,39 +1,21 @@
-import dotenv from "dotenv";
-dotenv.config();
-// server.js
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 import cors from "cors";
-<<<<<<< HEAD:backend/scripts/server.js
-import userRoutes from "./userRoutes.js"; // user routes
-=======
-import userRoutes from "./routes/UserRoutes.js"; // user routes
+import userRoutes from "./routes/UserRoutes.js";
 
->>>>>>> parent of ed76f6a (renamed routes and imports):backend/server.js
+dotenv.config();
+const app = express();
 
-
-const app = express(); // define the app
-const PORT = process.env.PORT || 5000;
-
-// Middleware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-// Root route for testing
-app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
-});
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB error:", err));
 
-// Routes
-app.use("/api/Users", userRoutes);
+// API Routes
+app.use("/api/user", userRoutes);
 
-// Connect MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-// Server start
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(5000, () => console.log("🚀 Server running on port 5000"));
