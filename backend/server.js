@@ -17,5 +17,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 // API Routes
 app.use("/api/user", userRoutes);
+app.use("api/patient", patientRoutes);
 
 app.listen(5000, () => console.log("🚀 Server running on port 5000"));
