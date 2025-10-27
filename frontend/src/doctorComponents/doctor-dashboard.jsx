@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PrescriptionPage from './prescription-page';
+
 import {
   User,
   Clock,
@@ -10,7 +12,7 @@ import {
   Users
 } from 'lucide-react';
 
-export default function DoctorDashboard({ onSignOut, onSeePatient }) {
+export default function DoctorDashboard({ onSignOut }) {
   const [patients, setPatients] = useState([
     {
       id: 1,
@@ -89,6 +91,7 @@ export default function DoctorDashboard({ onSignOut, onSeePatient }) {
       lastVisit: '2024-09-18'
     }
   ]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   const [activeTab, setActiveTab] = useState('queue');
 
@@ -96,21 +99,34 @@ export default function DoctorDashboard({ onSignOut, onSeePatient }) {
   const waitingPatients = patients.filter(p => p.status === 'waiting');
   const completedToday = patients.filter(p => p.status === 'completed').length;
 
-  const handleNextPatient = () => {
-    if (nextPatient) {
-      setPatients(prev =>
-        prev.map(p =>
-          p.id === nextPatient.id
-            ? { ...p, status: 'in-progress' }
-            : p.status === 'in-progress'
-              ? { ...p, status: 'completed' }
-              : p
-        )
-      );
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
-      onSeePatient(nextPatient);
-    }
+  // When Prescription button is clicked
+  const handlePrescription = () => {
+    setSelectedPatient(
+      patients.find(p => p.status === 'waiting') || patients[0] // some dummy patient; can customize
+    );
+    setCurrentPage('prescription');
   };
+
+  const handleBack = () => {
+    setCurrentPage('dashboard');
+  };
+
+  const handleComplete = () => {
+    // Do something on complete (e.g., mark as completed, show notification, etc.)
+    setCurrentPage('dashboard');
+  };
+
+  if (currentPage === 'prescription' && selectedPatient) {
+    return (
+      <PrescriptionPage
+        patient={selectedPatient}
+        onBack={handleBack}
+        onComplete={handleComplete}
+      />
+    );
+  }
 
   const getStatusBadge = (status) => {
     const base = "px-2 py-1 rounded-full text-sm font-medium";
@@ -192,7 +208,7 @@ export default function DoctorDashboard({ onSignOut, onSeePatient }) {
           <div className="bg-white p-6 mb-8 rounded-lg shadow border-l-4 border-teal-600">
             <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
               <User className="h-5 w-5 text-teal-600" />
-              Next Patient
+              Prescription
             </h2>
             <p className="text-gray-500 mb-4">Ready for consultation</p>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -203,10 +219,10 @@ export default function DoctorDashboard({ onSignOut, onSeePatient }) {
                 <p className="text-gray-600"><strong>Scheduled:</strong> {nextPatient.appointmentTime}</p>
               </div>
               <button
-                onClick={handleNextPatient}
+                onClick={handlePrescription}
                 className="bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700 flex items-center"
               >
-                See Patient <ArrowRight className="h-4 w-4 ml-2" />
+                Prescription <ArrowRight className="h-4 w-4 ml-2" />
               </button>
             </div>
           </div>
