@@ -31,7 +31,7 @@ export default function Patient() {
 
   // after signing out, back to home page
   const handleSignOut = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     setCurrentPage('home');
     navigate('/');
   };

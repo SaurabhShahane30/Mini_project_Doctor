@@ -16,7 +16,7 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
       });
       
       localStorage.setItem("token", res.data.token); // store JWT
-      onSignIn(res.data.patient); // Pass user info to parent
+      onSignIn(res.data.token); // Pass user info to parent
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     }

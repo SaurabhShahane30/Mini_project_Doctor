@@ -1,26 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Home from '../Home';
 import SignIn from './signin';
 import SignUp from './signup';
 import DoctorDashboard from './doctor-dashboard';
 
-export default function Patient() {
+export default function Doctor() {
   const [currentPage, setCurrentPage] = useState('signin');
   const navigate = useNavigate();
 
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setCurrentPage('dashboard');
+      } else {
+        setCurrentPage('signin');
+      }
+    }, []);
+
   // after signing in, go to dashboard
-  const handleSignIn = () => {
+  const handleSignIn = (token) => {
+    localStorage.setItem('token', token);
     setCurrentPage('dashboard');
   };
 
-  // after signing up, go to dashboard
+  // after signing up, go to signin
   const handleSignUp = () => {
-    setCurrentPage('dashboard');
+    setCurrentPage('signin');
   };
 
   // after signing out, back to home page
   const handleSignOut = () => {
+    localStorage.removeItem('token');
     setCurrentPage('home');
     navigate('/');
   };

@@ -3,11 +3,40 @@ import { useNavigate } from "react-router-dom"; // ✅ import navigate
 import axios from "axios";
 import { Search, LogOut, Stethoscope, FileText, Pill, User } from "lucide-react";
 
-export default function RegisteredPatients() {
+export default function DoctorDashboard({ onSignOut }) {
   const navigate = useNavigate(); // ✅ initialize navigate
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const [user, setUserData] = useState(null);
   const [patients, setPatients] = useState([]);
 
+  // Fetch Doctor data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No token found');
+        
+        const response = await axios.get('http://localhost:5000/api/user', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUserData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch patient data');
+        setLoading(false);
+        console.error(err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Fetch only registered patient list
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -19,11 +48,6 @@ export default function RegisteredPatients() {
     };
     fetchPatients();
   }, []);
-
-  const handleSignOut = () => {
-    localStorage.removeItem("doctorToken");
-    window.location.href = "/";
-  };
 
   const onViewReport = (patient) => {
     alert(`Viewing report of ${patient.name}`);
@@ -48,8 +72,8 @@ export default function RegisteredPatients() {
               <Stethoscope className="text-white h-5 w-5" />
             </div>
             <div>
-              <h1 className="font-semibold text-lg">Dr. Sarah Mitchell</h1>
-              <p className="text-gray-500 text-sm">Cardiology Department</p>
+              <h1 className="font-semibold text-lg">{user ? user.name : "Loading..."}</h1>
+              <p className="text-gray-500 text-sm">{user ? user.specialization : "Loading..."}</p>
               <p className="text-gray-400 text-xs">
                 Green Valley Hospital, California • +1 (234) 567-890
               </p>
@@ -57,7 +81,7 @@ export default function RegisteredPatients() {
           </div>
 
           <button
-            onClick={handleSignOut}
+            onClick={onSignOut}
             className="flex items-center px-4 py-2 text-sm font-medium text-teal-600 border border-teal-600 rounded-md hover:bg-teal-50"
           >
             <LogOut className="h-4 w-4 mr-2" />
