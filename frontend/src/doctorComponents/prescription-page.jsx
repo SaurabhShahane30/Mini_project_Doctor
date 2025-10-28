@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Stethoscope, FileText, Pill, Plus, Trash2, Send } from "lucide-react";
+import axios from "axios";
 
 export default function PrescriptionPage() {
   const location = useLocation();
@@ -25,10 +26,27 @@ export default function PrescriptionPage() {
 
   const removeMedication = (id) => setMedications(medications.filter(med => med.id !== id));
 
-  const handleComplete = () => {
-    console.log({ patient, diagnosis, symptoms, medications, notes, date: new Date().toISOString() });
-    navigate(-1); // go back after completion
-  };
+  const handleComplete = async () => {
+  try {
+    const payload = {
+      patientId: patient._id,        // assuming patient object has _id
+      doctorId: "68fdcc314cdf90265007ea5c",   // we'll replace this dynamically later
+      symptoms,
+      findings: diagnosis,          // mapping diagnosis to 'findings'
+      medications,
+      notes
+    };
+
+    const res = await axios.post("http://localhost:5000/api/prescriptions/create", payload);
+
+    alert("Prescription saved successfully!");
+    console.log("Response:", res.data);
+    navigate(-1); // go back after saving
+  } catch (error) {
+    console.error("Error saving prescription:", error);
+    alert("Failed to save prescription.");
+  }
+};
 
   if (!patient) return <p className="p-6 text-red-500">No patient data found.</p>;
 
