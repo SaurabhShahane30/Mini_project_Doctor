@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const PatientReportSchema = new mongoose.Schema({
-  patientName: { type: String, required: true },
+  patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
   summary: { type: String, required: true },
   keyFindings: { type: String },
   recommendations: { type: String },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }  
 });
 
 const PatientReport = mongoose.model("PatientReport", PatientReportSchema);
