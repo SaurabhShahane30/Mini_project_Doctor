@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import axios from "axios";
 import { FaUpload, FaFileMedical } from "react-icons/fa";
 import * as pdfjsLib from "pdfjs-dist";
@@ -25,7 +25,7 @@ const MedicalSummary = () => {
 
   // ✅ Get patient name from login (localStorage)
   const user = JSON.parse(localStorage.getItem("user"));
-  const patientName = user ? `${user.firstName} ${user.lastName}` : "Unknown Patient";
+
 
   // Extract text from PDF
   const extractTextFromPDF = async (arrayBuffer) => {
@@ -93,53 +93,60 @@ const MedicalSummary = () => {
     setErrorMsg("");
   };
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a PDF file.");
-      return;
-    }
+const handleUpload = async () => {
+  if (!file) {
+    alert("Please select a PDF file.");
+    return;
+  }
 
-    if (GROQ_API_KEY === "gsk_your_actual_api_key_here") {
-      setErrorMsg("Please add your Groq API key first!");
-      return;
-    }
+  if (!GROQ_API_KEY) {
+    setErrorMsg("Please add your Groq API key first!");
+    return;
+  }
 
-    setLoading(true);
-    setErrorMsg("");
+  if (!patient) {
+    setErrorMsg("Patient information not loaded yet.");
+    return;
+  }
 
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const extractedText = await extractTextFromPDF(arrayBuffer);
+  setLoading(true);
+  setErrorMsg("");
 
-      if (!extractedText.trim()) throw new Error("No text extracted from the PDF.");
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const extractedText = await extractTextFromPDF(arrayBuffer);
 
-      const [genSummary, genFindings, genRecommendations] = await Promise.all([
-        generateMedicalSummary(extractedText),
-        generateKeyFindings(extractedText),
-        generateRecommendations(extractedText)
-      ]);
+    if (!extractedText.trim()) throw new Error("No text extracted from the PDF.");
 
-      setSummary(genSummary);
-      setKeyFindings(genFindings);
-      setRecommendations(genRecommendations);
+    const [genSummary, genFindings, genRecommendations] = await Promise.all([
+      generateMedicalSummary(extractedText),
+      generateKeyFindings(extractedText),
+      generateRecommendations(extractedText)
+    ]);
 
-      // ✅ Save report to MongoDB
-      await axios.post("http://localhost:5000/api/reports", {
-        patientName,
-        summary: genSummary,
-        keyFindings: genFindings,
-        recommendations: genRecommendations,
-        createdAt: new Date(),
-      });
+    setSummary(genSummary);
+    setKeyFindings(genFindings);
+    setRecommendations(genRecommendations);
 
-      console.log("Report saved successfully to MongoDB.");
-    } catch (err) {
-      console.error(err);
-      setErrorMsg(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // ✅ Save report to MongoDB with logged-in patient info
+    await axios.post("http://localhost:5000/api/reports", {
+      patientId: patient._id, // use the patient's ID from the patient collection
+      patientName: patient.name, // use the patient's name
+      summary: genSummary,
+      keyFindings: genFindings,
+      recommendations: genRecommendations,
+      createdAt: new Date(),
+    });
+
+    console.log("Report saved successfully to MongoDB.");
+  } catch (err) {
+    console.error(err);
+    setErrorMsg(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const formatMedicalText = (text) => {
     return text
@@ -149,12 +156,37 @@ const MedicalSummary = () => {
       .replace(/•/g, "<br/>•");
   };
 
+    const [patient, setPatientData] = useState(null);
+
+    // Fetch patient data
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No token found');
+        
+        const response = await axios.get('http://localhost:5000/api/patient', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setPatientData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch patient data');
+        setLoading(false);
+        console.error(err);
+      }
+    };
+
+    fetchPatientData();
+  }, []);
   return (
     <div className="max-w-3xl mx-auto p-6 font-sans">
       <h1 className="text-3xl font-bold mb-6 text-center">Medical Report Analyzer</h1>
 
       {/* Patient info */}
-      <p className="text-right text-gray-600 mb-3">Patient: <strong>{patientName}</strong></p>
+      <p className="text-right text-gray-600 mb-3">Patient: <strong>{patient ? patient.name : "Loading..."}</strong></p>
 
       <div className="flex flex-col items-center space-y-4">
         {/* Upload Section */}
@@ -213,3 +245,4 @@ const MedicalSummary = () => {
 };
 
 export default MedicalSummary;
+
