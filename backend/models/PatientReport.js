@@ -8,4 +8,5 @@ const PatientReportSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("PatientReport", PatientReportSchema);
+const PatientReport = mongoose.model("PatientReport", PatientReportSchema);
+export default PatientReport;
