@@ -5,29 +5,32 @@ import { DoctorsList } from './doctorList';
 import { PrescriptionsList } from './prescriptionList';
 import MedicalSummary from "./MedicalSummary";
 
-export default function PatientDashboard ({ onSignOut })  {
+export default function PatientDashboard({ onSignOut }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const prescriptions = [];
   const [reportSummaries, setReportSummaries] = useState([]);
-  const [activeView, setActiveView] = useState('dashboard'); // 'dashboard' or 'reports'
+  const [activeView, setActiveView] = useState('dashboard');
 
   const [patient, setPatientData] = useState(null);
   const [doctorsList, setDoctorList] = useState(null);
-  
+  const [prescriptions, setPrescriptions] = useState([]);
 
-  // Fetch patient data
+  // ✅ Get token & patientId from localStorage
+  const token = localStorage.getItem('token');
+  const patientId = localStorage.getItem('patientId');
+
+  // ✅ Fetch patient data
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
-        
-        const response = await axios.get('http://localhost:5000/api/patient', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        if (!patientId) throw new Error('No patient ID found');
+
+        const response = await axios.get(
+          `http://localhost:5000/api/patient/${patientId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
         setPatientData(response.data);
         setLoading(false);
@@ -39,20 +42,19 @@ export default function PatientDashboard ({ onSignOut })  {
     };
 
     fetchPatientData();
-  }, []);
+  }, [patientId, token]);
 
-  // Fetch doctor data
+  // ✅ Fetch doctors list
   useEffect(() => {
     const fetchDoctorList = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
-        
+
         const response = await axios.get('http://localhost:5000/api/user/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
+
         setDoctorList(response.data);
         setLoading(false);
       } catch (err) {
@@ -63,16 +65,39 @@ export default function PatientDashboard ({ onSignOut })  {
     };
 
     fetchDoctorList();
-  }, []);
+  }, [token]);
 
-  // Fetch report summaries
+  // ✅ Fetch prescriptions for this patient
+  useEffect(() => {
+    const fetchPrescriptions = async () => {
+      try {
+        if (!patientId) return;
+        const response = await axios.get(
+          `http://localhost:5000/api/prescriptions/patient/${patientId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setPrescriptions(response.data);
+      } catch (err) {
+        console.error("Failed to fetch prescriptions", err);
+        setError("Failed to fetch prescriptions");
+      }
+    };
+
+    fetchPrescriptions();
+  }, [patientId, token]);
+
+  // ✅ Fetch report summaries
   useEffect(() => {
     const fetchReports = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/reports'); 
-        // replace with your backend route
-        setReportSummaries(response.data); // assuming backend returns array of { date, summary }
+        if (!token) throw new Error('No token found');
+
+        const response = await axios.get('http://localhost:5000/api/reports', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setReportSummaries(response.data);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -82,7 +107,7 @@ export default function PatientDashboard ({ onSignOut })  {
     };
 
     fetchReports();
-  }, []);
+  }, [token]);
 
   return (
     <div className="min-h-screen flex bg-gray-50 text-gray-900">
@@ -137,6 +162,7 @@ export default function PatientDashboard ({ onSignOut })  {
               <div className="flex flex-col gap-6">
                 <MedicalSummary />
               </div>
+
               <div className="flex-1">
                 <PrescriptionsList prescriptions={prescriptions} />
               </div>
