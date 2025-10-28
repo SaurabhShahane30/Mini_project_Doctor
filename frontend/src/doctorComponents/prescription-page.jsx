@@ -30,7 +30,7 @@ export default function PrescriptionPage() {
   try {
     const payload = {
       patientId: patient._id,        // assuming patient object has _id
-      doctorId: "68fdcc314cdf90265007ea5c",   // we'll replace this dynamically later
+      doctorId: "6901099f802cfefbffc51474",   // we'll replace this dynamically later
       symptoms,
       findings: diagnosis,          // mapping diagnosis to 'findings'
       medications,

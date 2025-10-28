@@ -130,12 +130,11 @@ const handleUpload = async () => {
 
     // ✅ Save report to MongoDB with logged-in patient info
     await axios.post("http://localhost:5000/api/reports", {
-      patientId: patient._id, // use the patient's ID from the patient collection
-      patientName: patient.name, // use the patient's name
-      summary: genSummary,
-      keyFindings: genFindings,
-      recommendations: genRecommendations,
-      createdAt: new Date(),
+ patient: patient._id,
+  summary: genSummary,
+  keyFindings: genFindings,
+  recommendations: genRecommendations,
+  createdAt: new Date(),
     });
 
     console.log("Report saved successfully to MongoDB.");

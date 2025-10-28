@@ -50,8 +50,8 @@ export default function DoctorDashboard({ onSignOut }) {
   }, []);
 
   const onViewReport = (patient) => {
-    alert(`Viewing report of ${patient.name}`);
-  };
+  navigate(`/doctor/report/${patient._id}`, { state: { patient } });
+};
 
   const filteredPatients = patients.filter((p) =>
     p.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -146,6 +146,7 @@ export default function DoctorDashboard({ onSignOut }) {
                   onClick={() => onViewReport(patient)}
                   className="flex items-center gap-1 border border-teal-600 text-teal-600 px-3 py-1.5 rounded-md hover:bg-teal-50 text-xs"
                 >
+
                   <FileText className="h-4 w-4" /> View Report
                 </button>
               </div>

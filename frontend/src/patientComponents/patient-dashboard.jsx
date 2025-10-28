@@ -4,6 +4,8 @@ import axios from 'axios';
 import { DoctorsList } from './doctorList';
 import { PrescriptionsList } from './prescriptionList';
 import MedicalSummary from "./MedicalSummary";
+import ReportSummaryList from "./ReportSummarylist";
+
 
 export default function PatientDashboard({ onSignOut }) {
   const [loading, setLoading] = useState(true);
@@ -99,9 +101,9 @@ export default function PatientDashboard({ onSignOut }) {
 
         const patientId = patient._id;
         const response = await axios.get(
-          `http://localhost:5000/api/reports/${patientId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+  `http://localhost:5000/api/reports/${patientId}`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
         setReportSummaries(response.data);
         setLoading(false);
@@ -116,47 +118,64 @@ export default function PatientDashboard({ onSignOut }) {
   }, [token, patient]);
 
   return (
-    <div className="min-h-screen flex bg-gray-50 text-gray-900">
-      {/* Side Nav */}
-      <aside className="w-60 bg-white shadow-md p-4 flex flex-col gap-4">
-        <div className="flex items-center gap-2 mb-6">
+  <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
+      {/* ✅ Top Navbar */}
+      <nav className="bg-white shadow-md py-3 px-6 flex items-center justify-between">
+        {/* Left - Patient Info */}
+        <div className="flex items-center gap-3">
           <div className="bg-teal-600 p-2 rounded-full">
             <UserRoundPlus className="text-white h-5 w-5" />
           </div>
           <div>
-            <h1 className="font-semibold text-lg">{patient ? patient.name : "Loading..."}</h1>
-            <p className="text-gray-500 text-sm">{patient ? `${patient.gender}, ${patient.age} years` : ""}</p>
+            <h1 className="font-semibold text-lg">
+              {patient ? patient.name : "Loading..."}
+            </h1>
+            <p className="text-gray-500 text-sm">
+              {patient ? `${patient.gender}, ${patient.age} years` : ""}
+            </p>
           </div>
         </div>
 
-        <button
-          onClick={() => setActiveView('dashboard')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium hover:bg-teal-50 ${activeView === 'dashboard' ? 'bg-teal-100' : ''}`}
-        >
-          <FileText className="h-4 w-4" />
-          Dashboard
-        </button>
+        {/* Middle - Navigation Tabs */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setActiveView("dashboard")}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md font-medium transition-all ${
+              activeView === "dashboard"
+                ? "bg-teal-600 text-white"
+                : "text-gray-700 hover:bg-teal-50"
+            }`}
+          >
+            <FileText className="h-4 w-4" />
+            Dashboard
+          </button>
 
-        <button
-          onClick={() => setActiveView('reports')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium hover:bg-teal-50 ${activeView === 'reports' ? 'bg-teal-100' : ''}`}
-        >
-          <FileText className="h-4 w-4" />
-          Report Summary History
-        </button>
+          <button
+            onClick={() => setActiveView("reports")}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md font-medium transition-all ${
+              activeView === "reports"
+                ? "bg-teal-600 text-white"
+                : "text-gray-700 hover:bg-teal-50"
+            }`}
+          >
+            <FileText className="h-4 w-4" />
+            Reports
+          </button>
+        </div>
 
+        {/* Right - Sign Out */}
         <button
           onClick={onSignOut}
-          className="mt-auto flex items-center px-4 py-2 text-sm font-medium text-teal-600 border border-teal-600 rounded-md hover:bg-teal-50"
+          className="flex items-center px-3 py-1.5 text-sm font-medium text-teal-600 border border-teal-600 rounded-md hover:bg-teal-50"
         >
           <LogOut className="h-4 w-4 mr-2" />
           Sign Out
         </button>
-      </aside>
+      </nav>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
-        {activeView === 'dashboard' && (
+      {/* ✅ Main Content Area */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
+        {activeView === "dashboard" && (
           <>
             {doctorsList ? (
               <DoctorsList
@@ -180,24 +199,14 @@ export default function PatientDashboard({ onSignOut }) {
           </>
         )}
 
-        {activeView === 'reports' && (
-          <div className="bg-white shadow rounded-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Report Summary History</h2>
+        {activeView === "reports" && (
+          <ReportSummaryList
+  reportSummaries={reportSummaries}
+  loading={loading}
+  error={error}
+  patient={patient}
+/>
 
-            {loading && <p>Loading...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-
-            {!loading && !error && (
-              <ul className="divide-y divide-gray-200">
-                {reportSummaries.map((report, idx) => (
-                  <li key={idx} className="py-3">
-                    <p className="text-gray-500 text-sm">{report.date}</p>
-                    <p className="text-gray-900">{report.summary}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
         )}
       </main>
     </div>
