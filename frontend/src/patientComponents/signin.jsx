@@ -9,17 +9,16 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
+    try {      
       const res = await axios.post("http://localhost:5000/api/patient/signin", {
         email,
         password
       });
-
-      console.log("Login success:", res.data);
-      onSignIn(res.data.user); // Pass user info to parent
+      
+      localStorage.setItem("token", res.data.token); // store JWT
+      onSignIn(res.data.patient); // Pass user info to parent
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
-      console.log(err.response);
     }
   };
 

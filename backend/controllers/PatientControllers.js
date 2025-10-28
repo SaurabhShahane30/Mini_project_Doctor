@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import Patient from "../models/patient.js"
 
 // ✅ SIGNUP
@@ -28,7 +29,7 @@ export const signup = async (req, res) => {
 
 // ✅ SIGNIN
 export const signin = async (req, res) => {
-  try {
+  try {    
     const { email, password } = req.body;
 
     const patient = await Patient.findOne({ email });
@@ -37,16 +38,49 @@ export const signin = async (req, res) => {
     const isMatch = await bcrypt.compare(password, patient.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    res.status(200).json({ message: "Signin successful", patient });
+    const token = jwt.sign(
+      { id: patient._id, email: patient.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "5h" }
+    );
+
+    res.json({
+      token,
+      patient: { id: patient._id, email: patient.email, name: patient.name }
+    });
   } catch (err) {
+    console.error("Signin error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const requireAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach decoded info (id, email) to request object
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+export const getPatientProfile = async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.user.id).select('-password'); // Exclude password
+    if (!patient) return res.status(404).json({ message: 'Patient not found' });
+    res.json(patient);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 export const getAllPatients = async (req, res) => {
   try {
-    // Example using MongoDB
-    const patients = await Patient.find(); // Assuming you imported your model
+    const patients = await Patient.find();
     res.status(200).json(patients);
   } catch (error) {
     console.error("Error fetching patients:", error);

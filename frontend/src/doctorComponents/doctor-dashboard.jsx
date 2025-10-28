@@ -11,7 +11,7 @@ export default function RegisteredPatients() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/patient");
+        const response = await axios.get("http://localhost:5000/api/patient/all");
         setPatients(response.data);
       } catch (error) {
         console.error("Error fetching patients:", error);

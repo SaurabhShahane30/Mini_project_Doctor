@@ -42,3 +42,13 @@ export const signin = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+export const getAllDoctors = async (req, res) => {
+  try {
+    const doctors = await User.find();
+    res.status(200).json(doctors);
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+    res.status(500).json({ message: "Failed to fetch doctors" });
+  }
+};

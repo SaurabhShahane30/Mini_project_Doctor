@@ -16,7 +16,7 @@ export default function Patient() {
 
   // after signing up, go to dashboard
   const handleSignUp = () => {
-    setCurrentPage('dashboard');
+    setCurrentPage('signin');
   };
 
   // after signing out, back to home page
@@ -30,7 +30,7 @@ export default function Patient() {
     setCurrentPage('signup');
   };
 
-  // come back to sign in
+  // switch to sign in
   const switchToSignIn = () => {
     setCurrentPage('signin');
   };
