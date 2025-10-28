@@ -87,3 +87,49 @@ export const getAllPatients = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch patients" });
   }
 };
+
+
+export const addDoctor = async (req, res) => {
+  try {
+    const { patientId, doctorId } = req.params;
+
+    if (!doctorId) return res.status(400).json({ message: "Doctor ID required" });
+
+    const patient = await Patient.findById(patientId);
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+    
+    // Avoid duplicates
+    if (!patient.doctors.includes(doctorId)) {
+      patient.doctors.push(doctorId);
+      await patient.save();
+    }
+
+    res.json({ message: "Doctor added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const removeDoctor = async (req, res) => {
+  try {
+    const { patientId, doctorId } = req.params;
+
+    if (!doctorId) return res.status(400).json({ message: "Doctor ID required" });
+
+    const patient = await Patient.findById(patientId);
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+
+    // Remove doctorId if it exists in the array
+    const index = patient.doctors.indexOf(doctorId);
+    if (index > -1) {
+      patient.doctors.splice(index, 1);
+      await patient.save();
+    }
+
+    res.json({ message: "Doctor removed successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};

@@ -17,7 +17,6 @@ export default function PatientDashboard({ onSignOut }) {
 
   // ✅ Get token & patientId from localStorage
   const token = localStorage.getItem('token');
-  const patientId = localStorage.getItem('patientId');
 
   // ✅ Fetch patient data
   useEffect(() => {
@@ -25,11 +24,9 @@ export default function PatientDashboard({ onSignOut }) {
       try {
         setLoading(true);
         if (!token) throw new Error('No token found');
-        if (!patientId) throw new Error('No patient ID found');
 
-        const response = await axios.get(
-          `http://localhost:5000/api/patient/${patientId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const response = await axios.get("http://localhost:5000/api/patient/", { 
+          headers: { Authorization: `Bearer ${token}` } }
         );
 
         setPatientData(response.data);
@@ -42,7 +39,7 @@ export default function PatientDashboard({ onSignOut }) {
     };
 
     fetchPatientData();
-  }, [patientId, token]);
+  }, [token]);
 
   // ✅ Fetch doctors list
   useEffect(() => {
@@ -55,6 +52,8 @@ export default function PatientDashboard({ onSignOut }) {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        console.log(response.data);
+        
         setDoctorList(response.data);
         setLoading(false);
       } catch (err) {
@@ -71,12 +70,17 @@ export default function PatientDashboard({ onSignOut }) {
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        if (!patientId) return;
+        if (!patient) return;
+        setLoading(true);
+        
+        const patientId = patient._id;
         const response = await axios.get(
-          `http://localhost:5000/api/prescriptions/patient/${patientId}`,
+          `http://localhost:5000/api/prescriptions/${patientId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
         setPrescriptions(response.data);
+        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch prescriptions", err);
         setError("Failed to fetch prescriptions");
@@ -84,18 +88,20 @@ export default function PatientDashboard({ onSignOut }) {
     };
 
     fetchPrescriptions();
-  }, [patientId, token]);
+  }, [patient, token]);
 
   // ✅ Fetch report summaries
   useEffect(() => {
     const fetchReports = async () => {
       try {
         setLoading(true);
-        if (!token) throw new Error('No token found');
+        if (!patient) return;
 
-        const response = await axios.get('http://localhost:5000/api/reports', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const patientId = patient._id;
+        const response = await axios.get(
+          `http://localhost:5000/api/reports/${patientId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
         setReportSummaries(response.data);
         setLoading(false);
@@ -107,7 +113,7 @@ export default function PatientDashboard({ onSignOut }) {
     };
 
     fetchReports();
-  }, [token]);
+  }, [token, patient]);
 
   return (
     <div className="min-h-screen flex bg-gray-50 text-gray-900">
@@ -153,7 +159,11 @@ export default function PatientDashboard({ onSignOut }) {
         {activeView === 'dashboard' && (
           <>
             {doctorsList ? (
-              <DoctorsList doctors={doctorsList} />
+              <DoctorsList
+                doctors={doctorsList}
+                patientId={patient?._id}
+                patientDoctorIds={patient?.doctors || []}
+              />
             ) : (
               <p>Loading doctors...</p>
             )}

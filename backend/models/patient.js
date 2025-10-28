@@ -6,11 +6,7 @@ const patientSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  doctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  prescriptions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Prescription" }],
-  reports: [{ type: mongoose.Schema.Types.ObjectId, ref: "PatientReport" }]
-
-  
+  doctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 }, { timestamps: true });
 
 const Patient = mongoose.model("Patient", patientSchema);

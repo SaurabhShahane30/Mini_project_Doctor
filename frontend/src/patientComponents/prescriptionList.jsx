@@ -1,32 +1,11 @@
-import { useState, useEffect } from 'react';
 import { FileText, Download } from 'lucide-react';
-import axios from 'axios';
 
-export function PrescriptionsList({ patientId }) {
-  const [prescriptions, setPrescriptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPrescriptions = async () => {
-      try {
-        console.log("Fetching prescriptions for patient:", patientId);
-        const res = await axios.get(`http://localhost:5000/api/prescriptions/patient/${patientId}`);
-        setPrescriptions(res.data);
-      } catch (error) {
-        console.error('Error fetching prescriptions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (patientId) fetchPrescriptions();
-  }, [patientId]);
-
+export function PrescriptionsList({ prescriptions, loading }) {
   const handleDownload = (pdfPath) => {
     if (!pdfPath) return alert("No PDF available for this prescription.");
     const link = document.createElement("a");
-    link.href = `http://localhost:5000/${pdfPath}`;
-    link.download = pdfPath.split("/").pop();
+    link.href = `http://localhost:5000/${pdfPath.replace(/\\/g, '/')}`; // Fix Windows path separators for URL
+    link.download = pdfPath.split(/[/\\]/).pop(); // take file name from path
     link.click();
   };
 
@@ -48,23 +27,42 @@ export function PrescriptionsList({ patientId }) {
               <div className="flex justify-between items-center">
                 <div>
                   <span className="font-medium text-gray-800 block">
-                    {prescription.symptoms || 'No symptoms mentioned'}
+                    Symptoms: {prescription.symptoms || 'No symptoms mentioned'}
+                  </span>
+                  <span className="text-sm text-gray-600 block mt-1">
+                    Diagnosis: {prescription.findings || 'N/A'}
+                  </span>
+                  <span className="text-sm text-gray-600 block mt-1">
+                    Medications:
+                    <ul className="list-disc list-inside">
+                      {prescription.medications.map((med, i) => (
+                        <li key={i}>
+                          {med.name} - {med.dosage}, {med.frequency}, for {med.duration}
+                        </li>
+                      ))}
+                    </ul>
                   </span>
                   {prescription.notes && (
-                    <p className="text-gray-500 text-sm mt-1">{prescription.notes}</p>
+                    <p className="text-gray-500 text-sm mt-1">Notes: {prescription.notes}</p>
                   )}
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-gray-600 text-sm">
-                    {prescription.doctor?.name || 'Unknown Doctor'}
+                <div className="flex flex-col items-end gap-1 text-right">
+                  <span className="text-gray-600 text-sm font-semibold">
+                    Dr. {prescription.doctor?.name || 'Unknown Doctor'}
+                  </span>
+                  <span className="text-gray-500 text-xs">
+                    Specialization: {prescription.doctor?.specialization || 'N/A'}
+                  </span>
+                  <span className="text-gray-500 text-xs">
+                    License #: {prescription.doctor?.licenseNumber || 'N/A'}
                   </span>
 
-                  {/* ✅ Download Button */}
+                  {/* Download Button */}
                   {prescription.pdfPath && (
                     <button
                       onClick={() => handleDownload(prescription.pdfPath)}
-                      className="text-teal-600 hover:text-teal-800"
+                      className="text-teal-600 hover:text-teal-800 mt-2"
                       title="Download PDF"
                     >
                       <Download className="h-4 w-4" />

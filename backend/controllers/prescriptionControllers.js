@@ -28,7 +28,9 @@ export const createPrescription = async (req, res) => {
       notes
     });
 
-    await newPrescription.save();
+    const res = await newPrescription.save();
+    console.log(res.data);
+    
 
     // ✅ Generate PDF file
     const pdfDir = path.join("uploads");
@@ -44,9 +46,9 @@ export const createPrescription = async (req, res) => {
     doc.fontSize(20).text("🩺 Medical Prescription", { align: "center" });
     doc.moveDown();
 
-    doc.fontSize(14).text(`Patient Name: ${patient.firstName} ${patient.lastName}`);
+    doc.fontSize(14).text(`Patient Name: ${patient.name}`);
     doc.text(`Age: ${patient.age || "N/A"}`);
-    doc.text(`Doctor: Dr. ${doctor.firstName} ${doctor.lastName}`);
+    doc.text(`Doctor: Dr. ${doctor.name}`);
     doc.text(`Email: ${doctor.email}`);
     doc.moveDown();
 
@@ -86,8 +88,12 @@ export const createPrescription = async (req, res) => {
 // ✅ Get all prescriptions for a specific patient
 export const getPrescriptionsByPatient = async (req, res) => {
   try {
-    const { patientId } = req.params.id;
-    const prescriptions = await Prescription.find({ patient: patientId }).populate("doctor", "firstName lastName email");
+    const patientId = req.params.patientId;
+    
+    const prescriptions = await Prescription.find({ patient: patientId }).populate({
+      path: 'doctor',
+      select: 'name specialization licenseNumber'
+    });
     res.status(200).json(prescriptions);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

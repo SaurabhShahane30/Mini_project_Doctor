@@ -4,16 +4,6 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const navigate = useNavigate();
 
-  const handleSubmit = (role) => (e) => {
-    e.preventDefault();
-    if (role === "patient") {
-      navigate("/patient");
-    }
-    else if (role === "doctor") {
-      navigate("/doctor");
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">

@@ -8,7 +8,7 @@ const router = express.Router();
 
 // ✅ Existing routes
 router.post("/create", createPrescription);
-router.get("/patient/:patientId", getPrescriptionsByPatient);
+router.get("/:patientId", getPrescriptionsByPatient);
 
 // ✅ Configure Multer for PDF uploads
 const storage = multer.diskStorage({
