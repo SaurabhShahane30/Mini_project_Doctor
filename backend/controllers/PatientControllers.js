@@ -42,3 +42,14 @@ export const signin = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+export const getAllPatients = async (req, res) => {
+  try {
+    // Example using MongoDB
+    const patients = await Patient.find(); // Assuming you imported your model
+    res.status(200).json(patients);
+  } catch (error) {
+    console.error("Error fetching patients:", error);
+    res.status(500).json({ message: "Failed to fetch patients" });
+  }
+};

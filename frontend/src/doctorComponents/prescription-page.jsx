@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import {
-  ArrowLeft, Plus, Trash2, User, FileText, Pill,
-  Stethoscope, Send
-} from 'lucide-react';
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft, Stethoscope, FileText, Pill, Plus, Trash2, Send } from "lucide-react";
 
-export default function PrescriptionPage({ patient, onBack, onComplete }) {
+export default function PrescriptionPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const patient = location.state?.patient; // ✅ get patient from navigate state
+
   const [diagnosis, setDiagnosis] = useState('');
   const [symptoms, setSymptoms] = useState('');
   const [notes, setNotes] = useState('');
   const [medications, setMedications] = useState([]);
-  const [newMedication, setNewMedication] = useState({
-    name: '', dosage: '', frequency: '', duration: '', instructions: ''
-  });
+  const [newMedication, setNewMedication] = useState({ name: '', dosage: '', frequency: '', duration: '', instructions: '' });
 
   const commonMedications = ['Amoxicillin', 'Ibuprofen', 'Paracetamol', 'Aspirin', 'Omeprazole', 'Metformin', 'Atorvastatin'];
   const frequencies = ['Once daily', 'Twice daily', 'Three times daily', 'Every 8 hours', 'Before meals', 'After meals'];
@@ -23,20 +23,20 @@ export default function PrescriptionPage({ patient, onBack, onComplete }) {
     }
   };
 
-  const removeMedication = (id) => {
-    setMedications(medications.filter(med => med.id !== id));
-  };
+  const removeMedication = (id) => setMedications(medications.filter(med => med.id !== id));
 
   const handleComplete = () => {
     console.log({ patient, diagnosis, symptoms, medications, notes, date: new Date().toISOString() });
-    onComplete();
+    navigate(-1); // go back after completion
   };
+
+  if (!patient) return <p className="p-6 text-red-500">No patient data found.</p>;
+
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <button onClick={onBack} className="flex items-center text-teal-600 hover:underline">
+        <button onClick={() => navigate(-1)} className="flex items-center text-teal-600 hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </button>
         <h1 className="flex items-center text-2xl font-bold text-teal-700">
@@ -45,7 +45,6 @@ export default function PrescriptionPage({ patient, onBack, onComplete }) {
         <div></div>
       </div>
 
-      {/* Patient Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-6 rounded-lg shadow">
         <div><p className="text-gray-500 text-sm">Name</p><p className="font-medium">{patient.name}</p></div>
         <div><p className="text-gray-500 text-sm">Age/Gender</p><p>{patient.age} • {patient.gender}</p></div>
@@ -180,20 +179,15 @@ export default function PrescriptionPage({ patient, onBack, onComplete }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-between">
-        <button
-          onClick={onBack}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 flex items-center"
-        >
+       <div className="flex justify-between">
+        <button onClick={() => navigate(-1)} className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 flex items-center">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </button>
-        <button
-          onClick={handleComplete}
-          className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 flex items-center"
-        >
+        <button onClick={handleComplete} className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 flex items-center">
           <Send className="h-4 w-4 mr-2" /> Complete
         </button>
       </div>
     </div>
   );
 }
+  
