@@ -48,17 +48,10 @@ export default function PatientDashboard ({ onSignOut })  {
         setLoading(true);
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
-
-        console.log("fetching");
         
-        
-        const response = await axios.get('http://localhost:5000/api/user', {
+        const response = await axios.get('http://localhost:5000/api/user/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
-        console.log("response is");
-        
-        console.log(response.data);
         
         setDoctorList(response.data);
         setLoading(false);

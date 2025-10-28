@@ -16,7 +16,7 @@ export function DoctorsList({ doctors }) {
         ) : (
           doctors.map((doc) => (
             <li
-              key={doc.licenseNumber}
+              key={doc._id}
               className="p-3 border rounded-md hover:bg-gray-50 flex flex-col sm:flex-row sm:justify-between"
             >
               <span className="font-medium">{doc.name}</span>

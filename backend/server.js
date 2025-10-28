@@ -24,6 +24,4 @@ app.use("/api/patient", patientRoutes);
 app.use("/api/reports", patientReportsRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 
-
-
 app.listen(5000, () => console.log("🚀 Server running on port 5000"));

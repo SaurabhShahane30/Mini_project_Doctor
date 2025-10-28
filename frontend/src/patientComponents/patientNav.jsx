@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Home from '../Home';
 import SignIn from './signin';
@@ -8,19 +8,30 @@ import PatientDashboard from './patient-dashboard';
 export default function Patient() {
   const [currentPage, setCurrentPage] = useState('signin');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setCurrentPage('dashboard');
+    } else {
+      setCurrentPage('signin');
+    }
+  }, []);
   
   // after signing in, go to dashboard
-  const handleSignIn = () => {
+  const handleSignIn = (token) => {
+    localStorage.setItem('token', token);
     setCurrentPage('dashboard');
   };
 
-  // after signing up, go to dashboard
+  // after signing up, go to sign in
   const handleSignUp = () => {
     setCurrentPage('signin');
   };
 
   // after signing out, back to home page
   const handleSignOut = () => {
+    localStorage.removeItem('authToken');
     setCurrentPage('home');
     navigate('/');
   };
