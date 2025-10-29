@@ -40,14 +40,17 @@ export default function DoctorDashboard({ onSignOut }) {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/patient/all");
+        if(!user) return;
+        
+        const response = await axios.get(`http://localhost:5000/api/patient/${user._id}`);
+        
         setPatients(response.data);
       } catch (error) {
         console.error("Error fetching patients:", error);
       }
     };
     fetchPatients();
-  }, []);
+  }, [user]);
 
   const onViewReport = (patient) => {
   navigate(`/doctor/report/${patient._id}`, { state: { patient } });

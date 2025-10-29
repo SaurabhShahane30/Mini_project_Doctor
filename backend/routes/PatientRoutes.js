@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/signin", signin);
 
-router.get("/all", getAllPatients);
+router.get("/:doctorId", getAllPatients);
 router.get('/', requireAuth, getPatientProfile);
 router.post("/addDoctor/:patientId/:doctorId", addDoctor);
 router.post("/removeDoctor/:patientId/:doctorId", removeDoctor);

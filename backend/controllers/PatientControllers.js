@@ -79,8 +79,13 @@ export const getPatientProfile = async (req, res) => {
 };
 
 export const getAllPatients = async (req, res) => {
+  const doctorId = req.params.doctorId;
   try {
-    const patients = await Patient.find();
+    console.log(doctorId);
+    
+    const patients = await Patient.find({ doctors: doctorId });
+    console.log(patients);
+    
     res.status(200).json(patients);
   } catch (error) {
     console.error("Error fetching patients:", error);
