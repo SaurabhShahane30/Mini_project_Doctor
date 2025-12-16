@@ -20,7 +20,7 @@ const MedicalSummary = () => {
   const [fileName, setFileName] = useState("");
 
   // Groq API config
-  const GROQ_API_KEY = "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";
+  const GROQ_API_KEY = "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";
   const MODEL = "llama-3.1-8b-instant";
 
   // ✅ Get patient name from login (localStorage)
@@ -69,20 +69,121 @@ const MedicalSummary = () => {
     }
   };
 
-  const generateMedicalSummary = async (text) => {
-    const prompt = `As a medical expert, provide a concise summary of this medical report focusing on diagnosis, symptoms, and current health status:\n\n${text.slice(0, 3000)}`;
-    return await callGroqAPI(prompt);
-  };
+const generateMedicalSummary = async (text) => {
+  const prompt = `
+You are a medical documentation expert.
 
-  const generateKeyFindings = async (text) => {
-    const prompt = `Extract key medical findings as bullet points from this medical report. Include lab results, vital signs, and clinical observations:\n\n${text.slice(0, 3000)}`;
-    return await callGroqAPI(prompt);
-  };
+Analyze the following medical report and generate a **well-structured medical summary** in the exact format below.
+If any information is missing, write "Not mentioned".
 
-  const generateRecommendations = async (text) => {
-    const prompt = `Provide clear medical recommendations based on this report including treatment suggestions, follow-up requirements, and lifestyle advice:\n\n${text.slice(0, 3000)}`;
-    return await callGroqAPI(prompt);
-  };
+### Medical Report Summary
+
+**Patient Information**
+- Name:
+- Age:
+- Gender:
+- Address:
+- Weight:
+
+**Visit Details**
+- Date of Visit:
+- Consulting Doctor / Hospital:
+
+**Chief Complaint / Symptoms**
+- 
+
+**Diagnosis / Medical Condition**
+- 
+
+**Medical History (if available)**
+- 
+
+**Current Health Status**
+- 
+
+**Medications Prescribed**
+- 
+
+**Tests / Investigations**
+- 
+
+**Remarks**
+- 
+
+Use clear medical terminology.
+Do NOT add extra explanations outside this format.
+
+Medical Report:
+${text.slice(0, 3000)}
+`;
+  return await callGroqAPI(prompt);
+};
+
+const generateKeyFindings = async (text) => {
+  const prompt = `
+You are a clinical data analyst.
+
+Extract **key medical findings** from the report and present them in a structured bullet-point format under the following headings.
+Only include information explicitly mentioned in the report.
+
+### Key Medical Findings
+
+**Vital Signs**
+- 
+
+**Laboratory Results**
+- 
+
+**Imaging / Diagnostic Findings**
+- 
+
+**Clinical Observations**
+- 
+
+**Abnormal Findings (if any)**
+- 
+
+Do not repeat general text. Be precise and medically relevant.
+
+Medical Report:
+${text.slice(0, 3000)}
+`;
+  return await callGroqAPI(prompt);
+};
+
+
+const generateRecommendations = async (text) => {
+  const prompt = `
+You are an experienced physician.
+
+Based on the medical report below, provide **clear, patient-friendly medical recommendations** in the following format.
+Do NOT diagnose anything new. Only base recommendations on the report.
+
+### Medical Recommendations
+
+**Treatment Plan**
+- 
+
+**Medications & Dosage (if mentioned)**
+- 
+
+**Lifestyle & Dietary Advice**
+- 
+
+**Follow-up & Monitoring**
+- 
+
+**Warning Signs / When to Seek Medical Help**
+- 
+
+Keep recommendations concise, professional, and easy to understand.
+
+Medical Report:
+${text.slice(0, 3000)}
+`;
+  return await callGroqAPI(prompt);
+};
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
