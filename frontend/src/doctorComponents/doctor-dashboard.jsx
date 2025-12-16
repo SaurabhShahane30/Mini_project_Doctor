@@ -62,7 +62,14 @@ export default function DoctorDashboard({ onSignOut }) {
 
   // ✅ Navigate to PrescriptionPage with state
   const handlePrescribe = (patient) => {
-    navigate(`/prescription`, { state: { patient } });
+    navigate("/prescription", {
+  state: {
+    patient,
+    doctor: user   // 👈 MUST contain _id
+  }
+});
+
+
   };
 
   return (

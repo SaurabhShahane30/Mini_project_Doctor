@@ -7,6 +7,7 @@ export default function PrescriptionPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const patient = location.state?.patient; // ✅ get patient from navigate state
+  const doctor = location.state?.doctor;
 
   const [diagnosis, setDiagnosis] = useState('');
   const [symptoms, setSymptoms] = useState('');
@@ -30,7 +31,7 @@ export default function PrescriptionPage() {
   try {
     const payload = {
       patientId: patient._id,        // assuming patient object has _id
-      doctorId: "6901099f802cfefbffc51474",   // we'll replace this dynamically later
+      doctorId: "6901099f802cfefbffc51474",   // we'll replace this dynamically later6901099f802cfefbffc51474
       symptoms,
       findings: diagnosis,          // mapping diagnosis to 'findings'
       medications,
